@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Root Context : defines shared resources visible to all other web components -->
+    <!--  ApplicationContext : 스프링이 사용하는 메모리 영역  -->
+
+    <!--  관리해야 하는 객체들에 대한 설정을 한다. 특정 패키지의 모든 컴포넌트를 스캔한다.  -->
+    <mvc:component-scan base-package="com.lipcoder.sample"/>
+
+</beans>
