@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 설정이 매우 중요, 해당 인터페이스에 sql 내용을 병합하기 떄문이다. -->
+<mapper namespace="com.lipcoder.mapper.TimeMapper">
+
+    <!--  SQL Mapper는 클래스 내부 뿐만 아니라 xml 형식으로 외부에서도 작성할 수 있다.
+          보통 sql문에 복잡한 경우 이러한 방법을 이용한다.  -->
+    <select id="getTime2" resultType="string">
+    SELECT sysdate FROM dual
+    </select>
+
+</mapper>

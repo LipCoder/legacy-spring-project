@@ -1,10 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
 
     <!-- Root Context : defines shared resources visible to all other web components -->
     <!--  ApplicationContext : 스프링이 사용하는 메모리 영역  -->
+
+    <!--  보통 외부 라이브러리들을 객체로 생성하는 경우에는
+          applicationContext.xml에 bean 태그로 직접 해준다.  -->
+    <!--  HikariCP 설정  -->
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+<!--        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>-->
+<!--        <property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:XE"/>-->
+
+        <!--  log4jdbc 대리자를 driver로 설정 DB <===> Oracle <===> DriverSpy <===> Connection Pool -->
+        <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+        <property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE"/>
+        <property name="username" value="book_ex"/>
+        <property name="password" value="book_ex"/>
+    </bean>
+
+    <!--  HikariCP 설정에 맞는 dataSource를 사용한다.
+          (dataSource는 커넥션 풀을 jdbc에서 사용할 수 있도록 도와주는 객체)  -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
+        destroy-method="close">
+        <constructor-arg ref="hikariConfig"/>
+    </bean>
+
+    <!--
+        SQLSessionFactory : 내부적으로 SQLSession이라는 것을 만드는 존재 (MyBatis의 핵심객체)
+        SQLSession : 개발에서 해당 객체를 통해 Connection을 생성하거나 원하는 SQL을 전달한다.
+     -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--   외부에서 정의한 sql문을 mybatis가 인식하기 위한 설정  -->
+        <property name="mapperLocations" value="classpath:mappers/*.xml"/>
+    </bean>
+
+    <!--  Spring에서 Mybatis가 동작할떄, Mapper 클래스를 인식할 수 있도록 설정  -->
+    <mybatis-spring:scan base-package="com.lipcoder.mapper"/>
+
 
     <!--  관리해야 하는 객체들에 대한 설정을 한다. 특정 패키지의 모든 컴포넌트를 스캔한다.  -->
     <mvc:component-scan base-package="com.lipcoder.sample"/>
