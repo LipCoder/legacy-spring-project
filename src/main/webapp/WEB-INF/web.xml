@@ -4,6 +4,10 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
+<!--  배포 서술자  -->
+<!--  web.xml은 톰캣 구동과 관련된 설정이 온다.  -->
+
+
 <!--
     * Context?
 
@@ -65,6 +69,8 @@
 
 
     * DispatcherServlet
+
+    웹 관련 처리의 준비작업을 진행한다.
 
     web.xml(배포서술자) 설정값에 따라 정의되고 매핑된다.
     DispatcherServlet은 WebApplicationContext를 이용하여 자신을 설정한다.

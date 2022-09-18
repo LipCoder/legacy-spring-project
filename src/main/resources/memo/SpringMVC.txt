@@ -1,0 +1,101 @@
+
+Spring은 하나의 기능을 위해 만들어진 것이 아닌
+'코어'라고 할 수 있는 프레임워크에 여러 서브 프로젝트를 결합하여
+다양한 상황에 대처할 수 있도록 개발되었다.
+
+'별도의 설정이 존재할 수 있다.' (서브 프로젝트의 필요성)
+
+
+ Spring MVC     - servlet-context.xml
+
+ Spring Core    --|
+                  | ===> root-context.xml
+   MyBatis      --|
+
+  DataBase
+
+root-context.xml       -- 일반 Java영역
+servlet-context.xml    -- Web 관련 영역
+
+
+WebApplicationContext가 MVC설정과 일반설정을 포함하는 구조이다.
+스프링은 원래 웹 애플리케이션을 목적으로 나온 프레임워크가 아니므로...
+달라지는 영역에 대해 완전히 분리하고 연동하는 방식으로 구현된다.
+
+
+웹 앱 빌드시 요구되는 3가지 파일
+web.xml                 - tomcat
+root-context.xml        - spring
+servlet-context.xml     - spring
+
+순서 : web --> root-context --> servlet-context
+              (rBean 생성)       (sBean 생성)
+
+* 웹 앱 디자인 패턴
+    - Model 1 : 동적 페이지에 대해 JSP가 모든 것을 처리한다.
+                (모든 소스를 JSP에 때려 박는 스타일)
+                (HTML 태그 사이에 스크립릿이 들어감)
+        장점 : 개발기간단축, 초심자가능, 중소형 프로젝트
+        단점 : 가독성이 떨어지고 커플링 현상으로 유지보수가 힘들다.
+              디자이너와 개발자간 의사소통이 필요
+              (비즈니스 로직과 뷰 사이의 구분이 없음)
+
+    - Model 2 : MVC 모델로 나누어 처리한다. 즉, 로직과 화면을 분리한다.
+        M(Model)      : 비즈니스 로직을 담당(Service, DAO)
+        V(View)       : Client에게 화면을 보여준다.(JSP, HTML)
+        C(Controller) : 클라이언트 요청을 받아 Model, View 사이의 일의 흐름을 조정
+
+
+        --> Request --> Controller --> Model --> (Data 처리 로직)
+           --> Controller -->  (처리된 데이터 전달) --> View --> Response
+
+        장점 : 비즈니스 로직과 뷰의 분리로 유지보수와 확장이 용이
+              개발자 디자이너의 작업이 분리되어 분업하기 편리
+        단점 : 구조 설계를 위한 시간이 많이 소요
+              높은 수준의 개발 역량이 요구
+
+    - Spring MVC : Model2와 같지만, 작동 로직에 대해 개발자들에게 보여주지 않음
+                   자신이 필요한 부분만 집중해서 개발하는 구조로 이루어져 있음
+
+
+        개발자 코드 영역 (개발자는 Servlet/JSP API에 신경쓰지 않고 웹 앱을 제작)
+        ------------
+         Spring MVC  (Spring MVC는 내부적으로 Servlet/JSP 처리)
+        ------------
+         Servlet/JSP
+
+         Spring MVC를 사용하면 Servlet API에서 제공하는
+         HttpServletRequest(Response)객체를 직접 사용할 필요성이 줄어듦
+
+
+        (Detail한 처리구조, Front-Controller 패턴)
+        Request --> DispatcherServlet
+          --> HandlerMapping --> HandlerAdapter --> Controller
+            --> ViewResolver --> View --> JSP/Others
+              --> DispatcherServlet --> Response
+
+        DispatcherServlet : Front-Controller로 특정 패턴(/*.do)의 url요청이 오면
+                            해당 요청을 가로채 HandlerMapping에 보낸다.
+                            또한 만들어진 Response를 클라이언트로 전송한다.
+        HandlerMapping : Request의 처리를 담당하는 컨트롤러를 찾는다.
+                         (@RequestMapping 어노테이션을 통해 찾는다.)
+        HandlerAdapter : 해당하는 컨트롤러를 동작시킨다.
+        ViewResolver : 컨트롤러가 반환한 결과를 어떤 View를 통해 처리할지 해석하는 역할
+                       (InternalViewResolver)
+
+
+* Spring MVC에서의 Controller
+
+    특징
+    - HttpServletRequest(Response)를 거의 사용할 필요 없이 필요한 기능 구현
+    - 다양한 타입의 파라미터 처리, 다양한 타입의 리턴 타입 사용 가능
+    - GET, POST 등 전송 방식에 대한 처리를 어노테이션으로 가능
+    - 상속/인터페이스 방식 대신 어노테이션만으로도 필요한 설징이 가능
+
+
+
+
+
+
+
+

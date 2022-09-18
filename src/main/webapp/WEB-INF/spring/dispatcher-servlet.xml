@@ -17,6 +17,6 @@
         <property name="order"  value="1" />
     </bean>
 
-    <context:component-scan base-package="com.lipcoder" />
+    <context:component-scan base-package="com.lipcoder.controller" />
 
 </beans>
