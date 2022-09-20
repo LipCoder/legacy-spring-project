@@ -26,6 +26,7 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-web:5.0.7.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:5.0.7.RELEASE" />
           <element id="library" level="project" name="ojdbc8" />
+          <element id="library" level="project" name="servlet-api" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="legacy_spring/web/Web" />
