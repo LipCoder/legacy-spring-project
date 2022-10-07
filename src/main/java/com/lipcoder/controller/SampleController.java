@@ -4,19 +4,28 @@ import com.lipcoder.domain.SampleDTO;
 import com.lipcoder.domain.SampleDTOList;
 import com.lipcoder.domain.TodoDTO;
 import lombok.extern.log4j.Log4j;
+import oracle.jdbc.proxy.annotation.Post;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Response;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @Controller : Spring에 Controller로 Servlet Bean을 등록한다.
@@ -179,4 +188,80 @@ public class SampleController {
      * return "redirect:/";
      */
 
+    /**
+     * Controller 리턴타입
+     *
+     *  스프링은 다양한 리턴타입을 제공한다.
+     */
+
+    // void 타입 : URL의 경로를 그대로 jsp파일의 이름으로 사용
+    @GetMapping("/ex05")
+    public void ex05() {
+        log.info("/ex05.....");
+        // ./sample/ex05.jsp
+    }
+
+    // String 타입 : 가장 많이 사용, 상황에 따라 다른 화면을 보여줘야 하는 경우 사용
+    // 특별한 키워드를 붙여 사용할 수 있다.
+    // redirect : 리다이렉트 방식으로 처리
+    // forward : 포워드 방식으로 처리
+    @GetMapping("/home")
+    public String home(Locale locale, Model model) {
+        log.info("Welcome home! the client locale is " + locale + ".");
+
+        Date date = new Date();
+        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+
+        String formattedDate = dateFormat.format(date);
+        model.addAttribute("serverTime", formattedDate);
+
+        return "home";
+    }
+
+    // Object 타입 : JSON 타입의 데이터를 보내준다.
+    // jackson-databind 가 Object 타입을 자동으로 JSON 형태로 바꿔준다.
+    @GetMapping("/ex06")
+    public @ResponseBody SampleDTO ex06() {
+        log.info("/ex06............");
+
+        SampleDTO dto = new SampleDTO();
+        dto.setAge(10);
+        dto.setName("홍길동");
+
+        return dto;
+    }
+
+    // Response Entity 타입
+    // Web을 다루다 보면 HTTP 프로토콜 헤더를 다루는 경우가 종종있다.
+    // Spring 은 Servlet API를 직접 건드리지 않고도 이러한 기능을 할 수 있게 제공한다.
+    @GetMapping("/ex07")
+    public ResponseEntity<String> ex07() {
+        log.info("/ex07...............");
+
+        String msg = "{\"name\" : \"홍길동\"}";
+
+        HttpHeaders header = new HttpHeaders();
+        header.add("Content-Type", "application/json;charset=UTF-8");
+
+        return new ResponseEntity<>(msg, header, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/exUpload")
+    public String exUpload() {
+
+        log.info("/exUpload...............");
+        return "exUpload";
+    }
+
+    @PostMapping("/exUploadPost")
+    public void exUploadPost(ArrayList<MultipartFile> files) {
+
+        files.forEach(file -> {
+            log.info("-------------------------------------------------");
+            log.info("name: " + file.getOriginalFilename());
+            log.info("size: " + file.getSize());
+
+        });
+    }
 }

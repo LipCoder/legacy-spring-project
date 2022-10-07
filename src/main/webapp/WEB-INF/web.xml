@@ -87,6 +87,13 @@
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/spring/dispatcher-servlet.xml</param-value>
         </init-param>
+
+        <!--  WAS에서 잘못된 URL 요청을 받게되는 경우 이에 대한 에러를 던지겠다  -->
+        <init-param>
+            <param-name>throwExceptionIfNoHandlerFound</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
         <load-on-startup>1</load-on-startup>
     </servlet>
     

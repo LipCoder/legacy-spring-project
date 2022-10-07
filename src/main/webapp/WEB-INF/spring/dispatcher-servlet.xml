@@ -4,6 +4,9 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
+
+<!--  DispatcherServlet Context : 요청과 관련된 Bean을 처리한다  -->
+
     <mvc:annotation-driven/>
 
 <!--
@@ -18,5 +21,23 @@
     </bean>
 
     <context:component-scan base-package="com.lipcoder.controller" />
+    <context:component-scan base-package="com.lipcoder.exception" />
+
+    <!--  file upload  -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--  파일 깨짐 문제를 해결  -->
+        <property name="defaultEncoding" value="utf-8"/>
+        <!--  Request로 전달 될 수 있는 최대 크기
+              1024 * 1024 * 10 bytes =  10MB -->
+        <property name="maxUploadSize" value="104857560"/>
+        <!--  한 파일의 최대 크기
+              1024 * 1024 * 2 bytes = 2MB   -->
+        <property name="maxUploadSizePerFile" value="2097152"/>
+        <property name="uploadTempDir" value="file:/Users/twoson/Documents/upload/tmp"/>
+        <!--  메모리상에서 유지하는 최대 크기(하드디스크로 보낼 중간다리인 메모리를..?)  -->
+        <property name="maxInMemorySize" value="10485765"/>
+    </bean>
+
+
 
 </beans>
